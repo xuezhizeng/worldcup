@@ -125,6 +125,10 @@ function draw(geo_data) {
                .attr("class", "tooltip2")       
                .style("opacity", 0);
 
+            var div3 = d3.select("body").append("div") 
+              .attr("class", "tooltip3")       
+              .style("opacity", 0);
+
             svg.append('g')
                .attr("class", "bubble")
                .selectAll("circle")
@@ -138,7 +142,6 @@ function draw(geo_data) {
                .attr('cy', function(d) { return d.values['y']; })
                .attr('r', function(d) { return radius(d.values['attendance']);
                });
-              
 
 
           function update(year) {
@@ -166,6 +169,26 @@ function draw(geo_data) {
                      })
                      .attr('class', 'cirlce2');
                    
+                   function matchData(data) {
+                    //avoid selectAll here, otherwise chart circles display this tootltip
+                   d3.select('circle')
+                      .data(data)
+                     .on("mouseover", function(d) {    
+                              div3.transition()    
+                                  .duration(200)    
+                                  .style("opacity", .9);    
+                              div3.html("<div><span>Winner:</span> <span style='color:white'>" + winner + "</span></div>") 
+                                  .style("left", (d3.event.pageX - 50) + "px")   
+                                  .style("top", (d3.event.pageY - 50) + "px");  
+                              })          
+                              .on("mouseout", function(d) {   
+                                  div3.transition()    
+                                      .duration(500)    
+                                      .style("opacity", 0); 
+                              });
+
+                   } //end function matchData
+                   matchData(data);
                      
               //countries in an array of strings of names
               var countries = filtered[0].values['teams'];
